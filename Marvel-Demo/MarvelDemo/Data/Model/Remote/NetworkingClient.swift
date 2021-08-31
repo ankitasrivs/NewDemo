@@ -1,0 +1,60 @@
+import Foundation
+//Service error
+enum ServiceError: Error {
+    case unknown
+    case timeout
+    case custom(_ error: String)
+}
+//Request type
+enum RequestType {
+    case get
+    case post
+}
+//Response type
+struct Response {
+    let data: Data
+    let statusCode: Int
+}
+//Network client file
+final class NetworkingClient: NSObject {
+    
+    /// Method  will show result based api
+    /// - Parameters:
+    ///   - url: url
+    ///   - queryParams: query parms
+    ///   - method: url method
+    /// - Returns: <#description#>
+    func requestApi(url: String, queryParams: [String: Any], method: RequestType) -> Result<Response, ServiceError> {
+        guard var urlComponent = URLComponents(string: url) else { return .failure(ServiceError.unknown) }
+        urlComponent.queryItems = queryParams
+            .map { URLQueryItem(name: $0.key, value: String(describing: $0.value)) }
+        
+        guard let url = urlComponent.url else { return .failure(ServiceError.unknown) }
+        var urlRequest = URLRequest(url: url)
+        switch method {
+        case .get:
+            urlRequest.httpMethod = "GET"
+        case .post:
+            urlRequest.httpMethod = "POST"
+        }
+        var result: Result<Response, ServiceError> = .failure(ServiceError.timeout)
+        let session = URLSession(configuration: .default)
+        let group = DispatchGroup()
+        group.enter()
+        session.dataTask(with: urlRequest) { data, response, error in
+            defer {
+                group.leave()
+            }
+            if error == nil, let response = response as? HTTPURLResponse, let data = data {
+                switch response.statusCode {
+                case 200:
+                    result = .success(Response(data: data, statusCode: response.statusCode))
+                default:
+                    result = .failure(ServiceError.unknown)
+                }
+            }
+        }.resume()
+        group.wait()
+        return result
+    }
+}
