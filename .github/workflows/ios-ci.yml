@@ -3,24 +3,43 @@ name: iOS CI
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
-    name: Build iOS app
+    name: Build MarvelDemo iOS App
     runs-on: macos-latest
+    timeout-minutes: 20
 
     steps:
-      - name: Checkout repository
+      - name: ✅ Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set up Xcode
+      - name: 🧹 Clean DerivedData (optional safety)
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData
+
+      - name: 🛠 Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode.app
 
-      - name: Build app using xcodebuild
+
+      - name: 🏗 Build App (No Code Signing)
         run: |
-          cd Marvel-Demo
+          cd MarvelDemo
           xcodebuild clean build \
-          -project MarvelDemo.xcodeproj \
-          -scheme Marvel \
-          -destination 'platform=iOS Simulator,name=iPhone 14' \
-          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+            -project MarvelDemo.xcodeproj \
+            -scheme MarvelDemo \
+            -destination 'platform=iOS Simulator,name=iPhone 14' \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_ALLOWED=NO
+
+      # Optional: Run unit tests
+      # - name: ✅ Run Unit Tests
+      #   run: |
+      #     cd MarvelDemo
+      #     xcodebuild test \
+      #       -project MarvelDemo.xcodeproj \
+      #       -scheme MarvelDemo \
+      #       -destination 'platform=iOS Simulator,name=iPhone 14'
+
