@@ -19,7 +19,7 @@ jobs:
       - name: Build app using xcodebuild
         run: |
           xcodebuild clean build \
-          -project NewDemo.xcodeproj \
-          -scheme NewDemo \
+          -project MarvelDemo.xcodeproj \
+          -scheme MarvelDemo \
           -destination 'platform=iOS Simulator,name=iPhone 14' \
           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
