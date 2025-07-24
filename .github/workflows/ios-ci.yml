@@ -18,6 +18,7 @@ jobs:
 
       - name: Build app using xcodebuild
         run: |
+          cd MarvelDemo
           xcodebuild clean build \
           -project MarvelDemo.xcodeproj \
           -scheme MarvelDemo \
