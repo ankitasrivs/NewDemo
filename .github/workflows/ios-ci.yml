@@ -25,7 +25,7 @@ jobs:
 
       - name: 🏗 Build App (No Code Signing)
         run: |
-          cd MarvelDemo
+          cd Marvel-Demo
           xcodebuild clean build \
             -project MarvelDemo.xcodeproj \
             -scheme Marvel \
