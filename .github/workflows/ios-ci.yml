@@ -21,6 +21,6 @@ jobs:
           cd Marvel-Demo
           xcodebuild clean build \
           -project MarvelDemo.xcodeproj \
-          -scheme MarvelDemo \
+          -scheme Marvel \
           -destination 'platform=iOS Simulator,name=iPhone 14' \
           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
